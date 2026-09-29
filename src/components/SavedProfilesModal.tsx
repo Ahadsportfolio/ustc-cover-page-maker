@@ -25,7 +25,10 @@ export const SavedProfilesModal: React.FC<Props> = ({
       try {
         const saved = localStorage.getItem(PROFILES_STORAGE_KEY);
         if (saved) {
-          setProfiles(JSON.parse(saved));
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) {
+            setProfiles(parsed);
+          }
         }
       } catch (e) {
         console.error('Failed to load profiles', e);

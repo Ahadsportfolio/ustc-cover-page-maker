@@ -37,7 +37,9 @@ export const TeacherSection: React.FC<Props> = ({ data, onChange }) => {
           <select
             value={DESIGNATIONS.includes(data.instructorDesignation) ? data.instructorDesignation : 'custom'}
             onChange={(e) => {
-              if (e.target.value !== 'custom') {
+              if (e.target.value === 'custom') {
+                onChange('instructorDesignation', '');
+              } else {
                 onChange('instructorDesignation', e.target.value);
               }
             }}
@@ -50,12 +52,13 @@ export const TeacherSection: React.FC<Props> = ({ data, onChange }) => {
             ))}
             <option value="custom">-- Custom Designation --</option>
           </select>
-          {(!DESIGNATIONS.includes(data.instructorDesignation) || data.instructorDesignation === 'custom') && (
+          {!DESIGNATIONS.includes(data.instructorDesignation) && (
             <input
               type="text"
-              value={data.instructorDesignation === 'custom' ? '' : data.instructorDesignation}
+              autoFocus
+              value={data.instructorDesignation}
               onChange={(e) => onChange('instructorDesignation', e.target.value)}
-              className="w-full mt-2 px-3 py-2 text-xs rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition"
+              className="w-full mt-2 px-3 py-2 text-xs rounded-lg border border-blue-400 dark:border-blue-500 bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition"
               placeholder="e.g. Guest Faculty"
             />
           )}

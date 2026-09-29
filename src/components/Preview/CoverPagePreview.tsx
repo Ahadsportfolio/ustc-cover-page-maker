@@ -155,6 +155,9 @@ export const CoverPagePreview: React.FC<Props> = ({ data, onUpdate }) => {
             {data.layoutPreset === 'executive' && <ExecutiveLayout data={data} />}
             {data.layoutPreset === 'sidebar' && <SidebarLayout data={data} />}
             {data.layoutPreset === 'technical' && <TechnicalGridLayout data={data} />}
+            {!['classic', 'modern', 'premium', 'executive', 'sidebar', 'technical'].includes(data.layoutPreset) && (
+              <ClassicAcademicLayout data={data} />
+            )}
           </div>
         </div>
 

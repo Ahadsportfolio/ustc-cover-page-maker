@@ -205,49 +205,53 @@ export const AppearanceSection: React.FC<Props> = ({ data, onChange }) => {
         </div>
 
         {/* Custom Color Pickers if 'custom' theme selected */}
-        {data.colorTheme === 'custom' && (
-          <div className="p-3 bg-slate-100 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-[11px] font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                Primary Accent Color
-              </label>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="color"
-                  value={data.customPrimaryColor}
-                  onChange={(e) => onChange('customPrimaryColor', e.target.value)}
-                  className="w-8 h-8 rounded cursor-pointer border border-gray-300"
-                />
-                <input
-                  type="text"
-                  value={data.customPrimaryColor}
-                  onChange={(e) => onChange('customPrimaryColor', e.target.value)}
-                  className="w-full px-2 py-1 text-xs rounded border border-gray-300 dark:border-slate-700 uppercase font-mono"
-                />
+        {data.colorTheme === 'custom' && (() => {
+          const safeHex = (hex: string, fallback: string) =>
+            /^#[0-9A-Fa-f]{6}$/.test(hex) ? hex : fallback;
+          return (
+            <div className="p-3 bg-slate-100 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-[11px] font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                  Primary Accent Color
+                </label>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="color"
+                    value={safeHex(data.customPrimaryColor, '#002B49')}
+                    onChange={(e) => onChange('customPrimaryColor', e.target.value)}
+                    className="w-8 h-8 rounded cursor-pointer border border-gray-300"
+                  />
+                  <input
+                    type="text"
+                    value={data.customPrimaryColor}
+                    onChange={(e) => onChange('customPrimaryColor', e.target.value)}
+                    className="w-full px-2 py-1 text-xs rounded border border-gray-300 dark:border-slate-700 uppercase font-mono"
+                  />
+                </div>
               </div>
-            </div>
 
-            <div>
-              <label className="block text-[11px] font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                Secondary / Highlight Color
-              </label>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="color"
-                  value={data.customAccentColor}
-                  onChange={(e) => onChange('customAccentColor', e.target.value)}
-                  className="w-8 h-8 rounded cursor-pointer border border-gray-300"
-                />
-                <input
-                  type="text"
-                  value={data.customAccentColor}
-                  onChange={(e) => onChange('customAccentColor', e.target.value)}
-                  className="w-full px-2 py-1 text-xs rounded border border-gray-300 dark:border-slate-700 uppercase font-mono"
-                />
+              <div>
+                <label className="block text-[11px] font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                  Secondary / Highlight Color
+                </label>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="color"
+                    value={safeHex(data.customAccentColor, '#D4AF37')}
+                    onChange={(e) => onChange('customAccentColor', e.target.value)}
+                    className="w-8 h-8 rounded cursor-pointer border border-gray-300"
+                  />
+                  <input
+                    type="text"
+                    value={data.customAccentColor}
+                    onChange={(e) => onChange('customAccentColor', e.target.value)}
+                    className="w-full px-2 py-1 text-xs rounded border border-gray-300 dark:border-slate-700 uppercase font-mono"
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
       </div>
 
       {/* Font Switcher */}

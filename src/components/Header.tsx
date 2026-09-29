@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { SAMPLE_PROFILES } from '../utils/sampleData';
 import { CoverPageData } from '../types/coverPage';
 import { USTCLogo } from './USTCLogo';
@@ -25,6 +25,19 @@ export const Header: React.FC<Props> = ({
   darkMode,
   onToggleDarkMode
 }) => {
+  const [isPresetsOpen, setIsPresetsOpen] = useState(false);
+  const presetsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (presetsRef.current && !presetsRef.current.contains(e.target as Node)) {
+        setIsPresetsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
     <header className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-200 dark:border-slate-800 sticky top-0 z-30 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
@@ -70,25 +83,33 @@ export const Header: React.FC<Props> = ({
           </div>
 
           {/* Preset Sample Selector Dropdown */}
-          <div className="relative group">
-            <button className="px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 text-blue-700 dark:text-blue-300 text-xs font-bold flex items-center space-x-1.5 border border-blue-200 dark:border-blue-900 transition">
+          <div className="relative" ref={presetsRef}>
+            <button
+              onClick={() => setIsPresetsOpen((prev) => !prev)}
+              className="px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 text-xs font-bold flex items-center space-x-1.5 border border-blue-200 dark:border-blue-900 transition"
+            >
               <Sparkles size={14} className="text-blue-600 dark:text-blue-400" />
               <span className="hidden sm:inline">Sample Presets</span>
             </button>
-            <div className="absolute right-0 top-full mt-1 w-64 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-200 dark:border-slate-700 p-2 hidden group-hover:block z-50">
-              <div className="text-[11px] font-bold uppercase tracking-wider text-gray-400 px-2 py-1 mb-1">
-                Fill Sample Data
+            {isPresetsOpen && (
+              <div className="absolute right-0 top-full mt-1 w-64 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-200 dark:border-slate-700 p-2 z-50 animate-in fade-in-50 zoom-in-95 duration-100">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-gray-400 px-2 py-1 mb-1">
+                  Fill Sample Data
+                </div>
+                {SAMPLE_PROFILES.map((profile, i) => (
+                  <button
+                    key={i}
+                    onClick={() => {
+                      onLoadSample(profile.data);
+                      setIsPresetsOpen(false);
+                    }}
+                    className="w-full text-left px-2.5 py-2 text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-slate-700 rounded-lg transition"
+                  >
+                    {profile.name}
+                  </button>
+                ))}
               </div>
-              {SAMPLE_PROFILES.map((profile, i) => (
-                <button
-                  key={i}
-                  onClick={() => onLoadSample(profile.data)}
-                  className="w-full text-left px-2.5 py-2 text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-slate-700 rounded-lg transition"
-                >
-                  {profile.name}
-                </button>
-              ))}
-            </div>
+            )}
           </div>
 
           {/* Profiles Manager */}

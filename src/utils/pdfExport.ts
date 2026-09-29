@@ -48,6 +48,7 @@ export const exportCoverPageToPDF = async (
 ): Promise<boolean> => {
   const report = (p: number) => onProgress?.(p);
 
+  let clone: HTMLElement | null = null;
   try {
     const source = document.getElementById(elementId);
     if (!source) {
@@ -57,8 +58,11 @@ export const exportCoverPageToPDF = async (
 
     report(10);
 
+    const paperBgColor =
+      data.paperBg === 'cream' ? '#FFFDF5' : data.paperBg === 'light-blue' ? '#F4F8FB' : '#FFFFFF';
+
     // ── 1. Deep-clone the element ────────────────────────────────────────────
-    const clone = source.cloneNode(true) as HTMLElement;
+    clone = source.cloneNode(true) as HTMLElement;
 
     // ── 2. Force exact A4 pixel size with inline styles ──────────────────────
     //    We use setAttribute to bypass Tailwind class specificity entirely.
@@ -71,6 +75,7 @@ export const exportCoverPageToPDF = async (
         `height:${A4_H}px`,
         `min-height:${A4_H}px`,
         `max-height:${A4_H}px`,
+        `background-color:${paperBgColor}`,
         'overflow:hidden',
         'position:relative',
         'transform:none',
@@ -119,7 +124,7 @@ export const exportCoverPageToPDF = async (
       scale: 2.5,          // high-res — 794*2.5=1985 wide px
       useCORS: true,
       allowTaint: true,
-      backgroundColor: '#FFFFFF',
+      backgroundColor: paperBgColor,
       logging: false,
       width: A4_W,
       height: A4_H,
@@ -133,10 +138,7 @@ export const exportCoverPageToPDF = async (
 
     report(75);
 
-    // ── 6. Remove clone ──────────────────────────────────────────────────────
-    document.body.removeChild(clone);
-
-    // ── 7. Build PDF ─────────────────────────────────────────────────────────
+    // ── 6. Build PDF ─────────────────────────────────────────────────────────
     const imgData = canvas.toDataURL('image/png');
 
     if (!imgData || imgData.length < 1000) {
@@ -155,7 +157,7 @@ export const exportCoverPageToPDF = async (
 
     report(90);
 
-    // ── 8. Download ──────────────────────────────────────────────────────────
+    // ── 7. Download ──────────────────────────────────────────────────────────
     const s = (v: string) => (v || '').replace(/[^a-zA-Z0-9]/g, '_');
     pdf.save(`USTC_${s(data.courseCode)}_${s(data.docType)}_${s(data.studentId)}.pdf`);
 
@@ -168,5 +170,9 @@ export const exportCoverPageToPDF = async (
   } catch (err) {
     console.error('PDF export failed:', err);
     return false;
+  } finally {
+    if (clone && clone.parentNode) {
+      clone.parentNode.removeChild(clone);
+    }
   }
 };

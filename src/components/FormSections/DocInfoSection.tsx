@@ -37,6 +37,13 @@ export const DocInfoSection: React.FC<Props> = ({ data, onChange }) => {
             </button>
           ))}
         </div>
+        <input
+          type="text"
+          value={data.docType}
+          onChange={(e) => onChange('docType', e.target.value)}
+          placeholder="Or type custom document type (e.g. Internship Report)"
+          className="mt-2 w-full px-3 py-1.5 text-xs rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition"
+        />
       </div>
 
       {/* Course Title & Code */}

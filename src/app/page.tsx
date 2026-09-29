@@ -89,7 +89,7 @@ function MainApp() {
       const savedDraft = localStorage.getItem(DRAFT_STORAGE_KEY);
       if (savedDraft) {
         const parsed = JSON.parse(savedDraft);
-        if (parsed && typeof parsed === 'object') {
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
           setData({
             ...DEFAULT_COVER_DATA,
             ...parsed,

@@ -70,7 +70,9 @@ export const HeaderSection: React.FC<Props> = ({ data, onChange }) => {
           <select
             value={USTC_DEPARTMENTS.includes(data.departmentName) ? data.departmentName : 'custom'}
             onChange={(e) => {
-              if (e.target.value !== 'custom') {
+              if (e.target.value === 'custom') {
+                onChange('departmentName', '');
+              } else {
                 onChange('departmentName', e.target.value);
               }
             }}
@@ -84,12 +86,13 @@ export const HeaderSection: React.FC<Props> = ({ data, onChange }) => {
             <option value="custom">-- Enter Custom Department --</option>
           </select>
 
-          {(!USTC_DEPARTMENTS.includes(data.departmentName) || data.departmentName === 'custom') && (
+          {!USTC_DEPARTMENTS.includes(data.departmentName) && (
             <input
               type="text"
-              value={data.departmentName === 'custom' ? '' : data.departmentName}
+              autoFocus
+              value={data.departmentName}
               onChange={(e) => onChange('departmentName', e.target.value)}
-              className="w-full px-3 py-2 text-xs rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition"
+              className="w-full px-3 py-2 text-xs rounded-lg border border-blue-400 dark:border-blue-500 bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition"
               placeholder="e.g. Department of Biomedical Engineering"
             />
           )}
